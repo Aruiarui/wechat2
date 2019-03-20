@@ -1,7 +1,7 @@
 const express = require('express');
 const sha1 = require('sha1');
 const app = express();
-//配置接口信息，验证服务器的有效性
+//测试号管理，配置接口信息，验证服务器的有效性
 
 app.use( (req, res) => {     //这里使用中间件接受所有请求和地址
   console.log(req.query);    //这里打印微信服务器发送过来的请求参数
