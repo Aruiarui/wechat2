@@ -1,5 +1,6 @@
 //封装中间件函数
 const sha1 = require('sha1');
+const template = require('./template');
 const { getUserDataAsync, parseXmlData, formatjsData } = require('../utils/tools');
 
 module.exports = () => {
@@ -40,20 +41,37 @@ module.exports = () => {
       console.log(userData)
       
       //实现自动回复
-      let replyMes = '今天天气不错，你要请我吃饭吗？'; //这里是除去定义的几种回复，其他时间回复这个
+      let options = {
+        toUserName: userData.FromUserName,
+        fromUserName: userData.ToUserName,
+        createTime: Date.now(),
+        type: 'text',
+        content: '今天天气不错，你要请我吃饭吗？'  //这里是将值给后面的options
+      }
+       //这里是除去定义的几种回复，其他时间回复这个
       if(userData.Content === '1') {
-        replyMes = '小猪佩奇，我配你';
+        options.content = '小猪佩奇，我配你';
         //indexof方法，检测字符串中是否包含指定的内容，包含返回值为 0，不包含返回值为 -1.
       }else if (userData.Content && userData.Content.indexOf('2') !== -1) {
-        replyMes = '生活很糟糕，\n但我很可爱';
+        options.content = '生活很糟糕，\n但我很可爱';
+      } 
+      if (userData.MsgType === 'image') {
+        //这里缺少MediaId，所以简单按接收普通消息处理，将用户发过来的图片继续发过去
+        options.mediaId = userData.MediaId;
+        options.type = 'image';
       }
-      let replyMessage = `<xml>
-        <ToUserName><![CDATA[${userData.FromUserName}]]></ToUserName>
-        <FromUserName><![CDATA[${userData.ToUserName}]]></FromUserName>
-        <CreateTime>${Date.now()}</CreateTime>
-        <MsgType><![CDATA[text]]></MsgType>
-        <Content><![CDATA[${replyMes}]]></Content> 
-      </xml>`
+      if (userData.MsgType === 'voice') {
+        //这里缺少MediaId，所以简单按接收普通消息处理，将用户发过来的语音继续发过去
+        options.mediaId = userData.MediaId;
+        options.type = 'voice';
+      }
+      if (userData.MsgType === 'video') {
+        //这里缺少MediaId，所以简单按接收普通消息处理，将用户发过来的语音继续发过去
+        options.mediaId = userData.MediaId;
+        options.type = 'video';
+      }
+
+      const replyMessage = template(options);
       console.log(replyMessage)
       //返回响应  官方规定必须返回xml数据结构，在官方文档被动回复用户消息里
       res.send(replyMessage)
