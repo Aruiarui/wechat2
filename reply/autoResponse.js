@@ -12,7 +12,7 @@ module.exports = (userData) => {
   if(userData.MsgType === 'text'){
     if(userData.Content === '1') {
       options.content = '小猪佩奇，我配你';
-    }else if (userData.Content && userData.Content.indexOf('2') !== -1) {
+    }else if (userData.Content.indexOf('2') !== -1) {
       options.content = '生活很糟糕，\n但我很可爱';
     }else {
       options.content = '今天天气不错，你要请我吃饭吗？' ;
@@ -31,12 +31,15 @@ module.exports = (userData) => {
         options.content = '感谢扫码关注公众号，你可真是优秀呢。'
       }
     }else if(userData.Event === 'unsubscribe') {
-      用户取关事件
+      //用户取关事件
       console.log('用户取消了关注');
-      options.content = '';
+      
     }else if(userData.Event === 'CLICK') {
       //用户点击了菜单
       options.content = '你想了解什么具体内容呢？可以帮你解答的哦。'
+      if (userData.EventKey === 'main') {
+        options.content = '用户点击了主菜单~';
+      }
     }
   }
   return options

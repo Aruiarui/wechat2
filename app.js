@@ -1,6 +1,6 @@
 const express = require('express');
 const reply = require('./reply/index')
-
+require("./wechatport/editmenu");
 const app = express();
 
 app.use(reply());
