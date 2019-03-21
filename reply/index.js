@@ -1,6 +1,7 @@
 //封装中间件函数
 const sha1 = require('sha1');
 const template = require('./template');
+const autoResponse = require('./autoResponse');
 const { getUserDataAsync, parseXmlData, formatjsData } = require('../utils/tools');
 
 module.exports = () => {
@@ -38,40 +39,11 @@ module.exports = () => {
       const jsData = parseXmlData(xmlData);
       //格式化jsData
       const userData = formatjsData(jsData);
-      console.log(userData)
-      
-      //实现自动回复
-      let options = {
-        toUserName: userData.FromUserName,
-        fromUserName: userData.ToUserName,
-        createTime: Date.now(),
-        type: 'text',
-        content: '今天天气不错，你要请我吃饭吗？'  //这里是将值给后面的options
-      }
-       //这里是除去定义的几种回复，其他时间回复这个
-      if(userData.Content === '1') {
-        options.content = '小猪佩奇，我配你';
-        //indexof方法，检测字符串中是否包含指定的内容，包含返回值为 0，不包含返回值为 -1.
-      }else if (userData.Content && userData.Content.indexOf('2') !== -1) {
-        options.content = '生活很糟糕，\n但我很可爱';
-      } 
-      if (userData.MsgType === 'image') {
-        //这里缺少MediaId，所以简单按接收普通消息处理，将用户发过来的图片继续发过去
-        options.mediaId = userData.MediaId;
-        options.type = 'image';
-      }
-      if (userData.MsgType === 'voice') {
-        //这里缺少MediaId，所以简单按接收普通消息处理，将用户发过来的语音继续发过去
-        options.mediaId = userData.MediaId;
-        options.type = 'voice';
-      }
-      if (userData.MsgType === 'video') {
-        //这里缺少MediaId，所以简单按接收普通消息处理，将用户发过来的语音继续发过去
-        options.mediaId = userData.MediaId;
-        options.type = 'video';
-      }
-
+      //自动回复的模块化，是定义用户发过来的消息，响应返回什么类型数据
+      const options = autoResponse(userData);
+      //这里定义回复用户的6种模板模块
       const replyMessage = template(options);
+      //这里打印回复信息是为了在出错时方便检查错误
       console.log(replyMessage)
       //返回响应  官方规定必须返回xml数据结构，在官方文档被动回复用户消息里
       res.send(replyMessage)
