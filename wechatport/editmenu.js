@@ -84,8 +84,66 @@ async function deleteMenu() {
   return result;
 } 
 //这里定义立即可执行函数来验证代码正确性
+// (async()=>{
+//   const result = await deleteMenu();
+//   const result1 = await createMenu();
+//   console.log(result,result1)
+// })()
+
+//为用户创建标签
+async function createTags(name) {
+  const { access_token } = await fetchAccessToken();
+  // 定义请求地址
+  const url = `https://api.weixin.qq.com/cgi-bin/tags/create?access_token=${access_token}`;
+  // 发送请求
+  return await rp({method: 'POST', url, json: true, body:{tag: {name}}});
+  return 
+} 
+
+// 获取标签下粉丝列表
+async function getListFans(tagid, next_openid='') {
+  const { access_token } = await fetchAccessToken();
+  // 定义请求地址
+  const url = `https://api.weixin.qq.com/cgi-bin/user/tag/get?access_token=${access_token}`;
+  // 发送请求  tagid是前面的返回值； next_openid是拉取列表的最后一个用户的OPENID
+  return await rp({method: 'POST', url, json: true, body:{tagid,   next_openid}});
+ 
+} 
+
+// 批量为用户打标签     openid_list是粉丝的用户列表id   tagid标签id 
+async function batchTags(openid_list, tagid) {
+  const { access_token } = await fetchAccessToken();
+  // 定义请求地址
+  const url = `https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging?access_token=${access_token}`;
+  // 发送请求  tagid是前面的返回值；next_openid是拉取列表的最后一个用户的OPENID
+  return await rp({method: 'POST', url, json: true, body:{openid_list , tagid }});
+  
+} 
+
+
+
+// 获取用户身上的标签列表 
+async function batchTags(openid) {
+  const { access_token } = await fetchAccessToken();
+  // 定义请求地址
+  const url = `https://api.weixin.qq.com/cgi-bin/tags/getidlist?access_token=${access_token}`;
+  // 发送请求  
+  return await rp({method: 'POST', url, json: true, body:{openid }});
+} 
+ 
 (async()=>{
-  const result = await deleteMenu();
-  const result1 = await createMenu();
-  console.log(result,result1)
+  const result = await createTags('family2');
+  console.log(result);
+
+  const result1 = await batchTags([
+    'owNFj1u0affezBC1tL1bU9VQdxMY',
+    'owNFj1inVKfeIojeVLDP_k-Bgy4s',
+    'owNFj1peYg9yFD381RkeVTtD8xuY'
+  ], result.tag.id);
+  const result2 = await getListFans(result.tag.id);
+  const result3 = await batchTags([
+    'owNFj1inVKfeIojeVLDP_k-Bgy4s',
+    'owNFj1peYg9yFD381RkeVTtD8xuY'
+  ]);
+  console.log(result1,result2,result3)
 })()
