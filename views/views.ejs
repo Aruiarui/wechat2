@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <h1 id="btn">点击录音搜索</h1>
+</body>
+<script src="http://res2.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.0rc1/zepto.min.js"></script> 
+<!-- 相当于移动端的jqury -->
+<script>
+  $(function() {
+    wx.config({
+      debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅    在pc端时会打印。
+      appId: 'wx99e8a26e628e6539', // 必填，公众号的唯一标识
+      timestamp: '<%= timestamp %>', // 必填，生成签名的时间戳
+      nonceStr: '<%= noncestr %>', // 必填，生成签名的随机串
+      signature: '<%= signature %>',// 必填，签名
+      jsApiList: [
+        //要使用微信什么接口必须声明，不声明不能用
+        'updateAppMessageShareData',   
+        'updateTimelineShareData',
+        'startRecord',   //开始录音
+        'stopRecord',    //结束录音
+        'translateVoice',    //对语音进行识别
+
+      ] 
+    })
+
+    wx.ready(function(){
+      // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载  时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+    });
+
+
+    //移动端点击事件
+    let isRecord = false;  //一开始是没有录音的
+    $('#btn').tap(function() {
+      //开始录音
+      if(isRecord) {
+        //结束录音
+        wx.stopRecord({
+          success: function (res) {
+            var localId = res.localId;
+
+            // 识别音频并返回识别结果接口
+            wx.translateVoice({
+              localId: 'localId', // 需要识别的音频的本地Id，由录音相关接口获得
+              isShowProgressTips: 1, // 默认为1，显示进度提示
+              success: function (res) {
+                alert(res.translateResult); // 语音识别的结果
+              }
+            });
+
+            isRecord = false
+          }
+
+        });
+      }else {
+        wx.startRecord();
+        isRecord = true;
+      }
+      
+
+      
+      
+
+    })
+
+    wx.checkJsApi({
+      jsApiList: [
+        'updateAppMessageShareData',   
+        'updateTimelineShareData',
+        'startRecord',   
+        'stopRecord',    
+        'translateVoice'
+      ], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+      success: function(res) {
+      // 以键值对的形式返回，可用的api值true，不可用为false
+      // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+        console.log(res)
+      }
+    })
+
+  })
+  
+</script>
+</html>

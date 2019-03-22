@@ -131,19 +131,19 @@ async function batchTags(openid) {
   return await rp({method: 'POST', url, json: true, body:{openid }});
 } 
  
-(async()=>{
-  const result = await createTags('family2');
-  console.log(result);
+// (async()=>{
+//   const result = await createTags('family3');
+//   console.log(result);
 
-  const result1 = await batchTags([
-    'owNFj1u0affezBC1tL1bU9VQdxMY',
-    'owNFj1inVKfeIojeVLDP_k-Bgy4s',
-    'owNFj1peYg9yFD381RkeVTtD8xuY'
-  ], result.tag.id);
-  const result2 = await getListFans(result.tag.id);
-  const result3 = await batchTags([
-    'owNFj1inVKfeIojeVLDP_k-Bgy4s',
-    'owNFj1peYg9yFD381RkeVTtD8xuY'
-  ]);
-  console.log(result1,result2,result3)
-})()
+//   const result1 = await batchTags([
+//     'owNFj1u0affezBC1tL1bU9VQdxMY',
+//     'owNFj1inVKfeIojeVLDP_k-Bgy4s',
+//     'owNFj1peYg9yFD381RkeVTtD8xuY'
+//   ], result.tag.id);
+//   const result2 = await getListFans(result.tag.id);
+//   const result3 = await batchTags([
+//     'owNFj1inVKfeIojeVLDP_k-Bgy4s',
+//     'owNFj1peYg9yFD381RkeVTtD8xuY'
+//   ]);
+//   console.log(result1,result2,result3)
+// })()

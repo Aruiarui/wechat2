@@ -14,6 +14,8 @@ module.exports = (userData) => {
       options.content = '小猪佩奇，我配你';
     }else if (userData.Content.indexOf('2') !== -1) {
       options.content = '生活很糟糕，\n但我很可爱';
+    }else if (userData.Content === '3') {
+      options.content = `<a href="http://d2c9a210.ngrok.io/views">发送语音，进行识别</a>`
     }else {
       options.content = '今天天气不错，你要请我吃饭吗？' ;
     }
@@ -33,6 +35,7 @@ module.exports = (userData) => {
     }else if(userData.Event === 'unsubscribe') {
       //用户取关事件
       console.log('用户取消了关注');
+      options.content = '';
       
     }else if(userData.Event === 'CLICK') {
       //用户点击了菜单

@@ -1,6 +1,9 @@
 //模块
 //因为有多个模块，所以用对象管理
 const { parseString } = require('xml2js');
+const { writeFile, readFile } = require('fs');
+const { resolve } = require('path');
+ 
 
 module.exports = {
   //获取用户数据
@@ -44,5 +47,31 @@ module.exports = {
       userData[key] = value[0];  //去掉数组
     }
     return userData;
+  },
+
+  //封装写入读取方法
+  //filePath文件路径，data要写入的文件内容
+  writeFileAsync(filePath,data) {
+    filePath = resolve(__dirname, '../wechatport', filePath);
+    return new Promise((resolve,reject) => {
+      writeFile(filePath, JSON.stringify(data), (err) => {
+        if (!err) resolve();
+        else reject(err)
+      })
+    })
+    
+  },
+  
+  readFileAsync(filePath) {
+    filePath = resolve(__dirname, '../wechatport', filePath);
+    return new Promise((resolve,reject) => {
+      readFile(filePath, (err, data) => { 
+        if(!err) {
+          resolve(JSON.parse(data.toString()));
+        }else {
+          reject(err);
+        }
+      }) 
+    })
   }
 } 
