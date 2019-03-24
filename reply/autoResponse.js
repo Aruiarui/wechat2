@@ -15,7 +15,7 @@ module.exports = (userData) => {
     }else if (userData.Content.indexOf('2') !== -1) {
       options.content = '生活很糟糕，\n但我很可爱';
     }else if (userData.Content === '3') {
-      options.content = `<a href="http://d2c9a210.ngrok.io/views">发送语音，进行识别</a>`
+      options.content = `<a href="http://2ba2f609.ngrok.io/views">发送语音，进行识别</a>`
     }else {
       options.content = '今天天气不错，你要请我吃饭吗？' ;
     }
